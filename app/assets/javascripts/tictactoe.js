@@ -31,6 +31,7 @@ function setMessage(str) {
 
 
 
+<<<<<<< HEAD
 function populateBoard(array){
   if (array.length === 0) {
     resetBoard();
@@ -52,6 +53,9 @@ function turnCount() {
   }
   return counter
 }
+=======
+
+>>>>>>> a0e315c4245dac077a9791a631b6c9281968ef7c
 
 function createStateArray() {
   var array = new Array();
@@ -62,6 +66,7 @@ function createStateArray() {
   return array
 }
 
+<<<<<<< HEAD
 
 function previousGames()
 {
@@ -100,6 +105,64 @@ function getGame()
       currentGame = parseInt(data.data["id"]);
       populateBoard(data.data["attributes"]["state"]);
     });    
+=======
+function loadGame(game){
+
+  
+    currentGame = parseInt(game);
+    setMessage("")
+    $.patch( "/games/" + game, function( data ) {
+
+        let board = data.data.attributes.state;
+        turn = board.filter(tile => tile != "").length
+        $("td").each(function(index){
+            $( this ).text(board[index])
+        })
+
+    })
+}
+
+function previousGames(){
+
+    $( "#games").empty()
+
+    $.patch( "/games", function( data ) {
+
+        $("#games").on("click", "button", function(event){
+            loadGame(this.id)
+        })
+
+        data.data.forEach(function(game){ 
+           $('#games').append('<button type="button" id="' + game.id + '">' + game.id + '</button><br>')
+        })
+      })
+
+}
+
+
+
+function saveGame(){
+  
+    let state = []
+    $("td").each(function(){
+        state.push($( this ).text())
+    })
+
+    if(currentGame == 0){
+
+        $.post('/games', {state: state}, function(data){
+            currentGame = parseInt(data.data.id)
+        })
+
+    } else {
+        $.ajax({
+            type: 'PATCH',
+            url: `/games/${currentGame}`,
+            data: {state: state}
+          });
+    }
+
+>>>>>>> a0e315c4245dac077a9791a631b6c9281968ef7c
 }
 
 
